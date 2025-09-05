@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <commdlg.h>
 #include <stdio.h>
-
+#include <fcntl.h>
 int main() {
     char fileName[MAX_PATH] = "";
 
@@ -17,7 +17,8 @@ int main() {
     ofn.lpstrDefExt = "csv";  // Enforces .csv extension
 
     if (GetSaveFileName(&ofn)) {
-        FILE *fp = fopen(fileName, "w");
+        int fd = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+        FILE *fp = (fd != -1) ? fdopen(fd, "w") : NULL;
         if (fp != NULL) {
             fprintf(fp, "Username,Password\n"); // Header row
             fprintf(fp, "user1,YourGeneratedPassword123!\n"); // Example
