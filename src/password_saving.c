@@ -26,10 +26,11 @@ char remarks[200] = "";
 // Function to get current date and time
 void getCurrentDateTime(char *dateStr, char *timeStr) {
     time_t now = time(NULL);
-    struct tm *t = localtime(&now);
+    struct tm t;
+    localtime_r(&now, &t);
 
-    strftime(dateStr, 11, "%d/%m/%Y", t);
-    strftime(timeStr, 6, "%H:%M", t);
+    strftime(dateStr, 11, "%d/%m/%Y", &t);
+    strftime(timeStr, 6, "%H:%M", &t);
 }
 
 
