@@ -12,6 +12,8 @@
  * */
 
 #include "../include/password_generator.h"
+#include <fcntl.h>     // for open()
+#include <sys/stat.h>  // for S_IRUSR, S_IWUSR
 
 // Data Array
 char date[11];             // "dd/mm/yyyy" + null terminator
@@ -53,7 +55,8 @@ void savePassword(bool choice, const char *generatedPassword) {
     ofn.lpstrDefExt = "csv";
 
     if (GetSaveFileName(&ofn)) {
-        FILE *fp = fopen(fileName, "w");
+        int fd = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR); // 0600
+        FILE *fp = (fd != -1) ? fdopen(fd, "w") : NULL;
         if (fp != NULL) {
             // Get current date and time
             getCurrentDateTime(date, timeStr);
